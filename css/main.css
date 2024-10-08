@@ -3,12 +3,13 @@ body {
     background-color: #f4f4f4;
     text-align: center;
     padding: 20px;
+    color: #2c3e50;
 }
 
 .fecha p {
-    font-size: 24px;
+    font-size: 18px;
     margin-bottom: 20px;
-    color: #333;
+    color: #2c3e50;
 }
 
 .cuenta-atras {
@@ -44,11 +45,27 @@ body {
     margin: 10px 0 0;
 }
 
+.presentacion {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 50px;
+    width: 50%;
+    transition: transform 0.3s ease-in-out;
+    width: 50%; /* Ancho del div */
+    margin: 0 auto 40px; /* Margen automático a los lados */
+    text-align: center; /* Centrar texto dentro del div */
+}
+
 .galeria {
     display: flex;
     flex-wrap: wrap;
+    width: 60%;
+    margin: 0 auto;
     justify-content: center;
     gap: 20px;
+    
 }
 
 .cuadro {
@@ -86,7 +103,7 @@ body {
 }
 
 .atras {
-    background-color: gray;
+    background-color: #2c3e50;
     transform: rotateY(180deg); /* La parte trasera comienza rotada */
     display: flex;
     justify-content: center;
@@ -109,14 +126,20 @@ body {
     transform: rotateY(360deg); /* Gira la parte trasera para que quede visible */
 }
 
-.cuadro img:hover {
+.cuadro:hover {
     transform: scale(1.1);
 }
+
 
 /* Media queries para pantallas móviles */
 @media (max-width: 768px) {
     .galeria {
         justify-content: center;
+        width: auto;
+    }
+
+    .presentacion {
+        width: auto;
     }
 
     .cuadro {
@@ -126,7 +149,20 @@ body {
     .cuenta-atras {
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: 10px;
+    }
+
+    .grande {
+        font-size: 30px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .chico {
+        font-size: 10px;
+        color: #7f8c8d;
+        margin: 10px 0 0;
     }
 
     .grupo {
