@@ -46,3 +46,9 @@ let intervalo = setInterval(() => {
     }
 
 }, 1000); // Intervalo de 1 segundo
+
+document.querySelectorAll('.cuadro').forEach(cuadro => {
+    cuadro.addEventListener('click', function() {
+        cuadro.classList.toggle('flip');
+    });
+});

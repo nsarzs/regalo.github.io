@@ -54,20 +54,59 @@ body {
 .cuadro {
     width: 200px;
     height: 200px;
-    background-color: #ffffff;
-    border: 2px solid #000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    perspective: 1000px; /* Profundidad 3D */
+}
+
+.cara {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden; /* Oculta la cara trasera cuando no está rotada */
+    transition: transform 0.6s ease-in-out;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    font-size: 18px;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.cuadro img {
+.frente {
+    background-color: white;
+    
+}
+
+.frente img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease-in-out;
+    border-radius: 10px;
+}
+
+.atras {
+    background-color: gray;
+    transform: rotateY(180deg); /* La parte trasera comienza rotada */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box; /* Asegura que el padding no expanda el contenedor */
+    word-wrap: break-word; /* Evita que el texto se desborde */
+}
+
+.cuadro.flip .frente {
+    transform: rotateY(180deg); /* Gira la parte frontal */
+}
+
+.cuadro.flip .atras {
+    transform: rotateY(360deg); /* Gira la parte trasera para que quede visible */
 }
 
 .cuadro img:hover {
@@ -88,5 +127,10 @@ body {
         display: flex;
         justify-content: center;
         gap: 5px;
+    }
+
+    .grupo {
+        padding: 7px;
+        width: 80px;
     }
 }

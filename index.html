@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
+    <header>
+        <h1>La Pagina de Rubitos</h1>
+    </header>
 
     <div class="fecha">
-        <p>¿Cuánto falta hasta el <span id="fecha">22/04/2025 21:00</span>?</p>
+        <p><span id="fecha">22/04/2025 21:00</span></p>
     </div>
     <div class="cuenta-atras" id="cuenta-atras">
         <div class="grupo">
@@ -30,14 +33,24 @@
         </div>
     </div>
 
-    <!-- Contenedor de imágenes -->
+    <!-- Contenedor de imágenes con dos caras (imagen y texto) -->
     <div class="galeria">
-        <div class="cuadro"><img src="./images/150824.jpg" alt="Imagen 1"></div>
-        <div class="cuadro"><img src="./images/230424.jpg" alt="Imagen 2"></div>
-        <div class="cuadro"><img src="./img/image3.jpg" alt="Imagen 3"></div>
-        <div class="cuadro"><img src="./img/image4.jpg" alt="Imagen 4"></div>
-        <div class="cuadro"><img src="./img/image5.jpg" alt="Imagen 5"></div>
-        <div class="cuadro"><img src="./img/image6.jpg" alt="Imagen 6"></div>
+        <div class="cuadro">
+            <div class="cara frente"><img src="./images/150824.jpg" alt="Imagen 1"></div>
+            <div class="cara atras">15/08/2024</div>
+        </div>
+        <div class="cuadro">
+            <div class="cara frente"><img src="./images/230424.jpg" alt="Imagen 2"></div>
+            <div class="cara atras">23/04/2024</div>
+        </div>
+        <div class="cuadro">
+            <div class="cara frente"><img src="./images/280924.jpg" alt="Imagen 3"></div>
+            <div class="cara atras">28/09/2024</div>
+        </div>
+        <div class="cuadro">
+            <div class="cara frente"><img src="./images/2809242.jpg" alt="Imagen 4"></div>
+            <div class="cara atras">28/09/2024</div>
+        </div>
     </div>
 
     <script src="./js/main.js"></script>
