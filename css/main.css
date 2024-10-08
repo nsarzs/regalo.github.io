@@ -83,4 +83,10 @@ body {
     .cuadro {
         width: 45%;
     }
+
+    .cuenta-atras {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
 }
