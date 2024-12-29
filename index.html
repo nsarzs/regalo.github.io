@@ -32,20 +32,33 @@
             <p class="chico">segundos</p>
         </div>
     </div>
-    <div class="presentacion">
-        <h2>Dedicado a mi Chica</h2>
-        <h3>Feliz cumpleaños!!!!</h3>
-        <p>Feliz cumpleaños a la chica que me hace reír todos los días! Eres la luz en mis mañanas y la razón detrás de muchas de mis sonrisas. Desde que comenzamos nuestra relación hace 7 meses, mi vida ha cambiado para mejor. Tu apoyo incondicional y tus intentos constantes de ayudarme hacen que cada día sea especial.</p>
 
-        <p>Admiro la forma en que siempre encuentras la manera de alegrar mis días, incluso cuando las cosas se ponen difíciles. Tu sentido del humor, tan único y auténtico, hace que cada momento a tu lado sea divertido y memorable. Me encanta que compartamos esa misma locura, ese humor de "kk" que tanto nos une.</p>
-            
-        <p>Hoy, al cumplir 20 añitos 🦆, te conviertes en una abuelita moderna, ¡prácticamente un fósil! Pero no te preocupes, eso solo significa que eres aún más sabia y divertida(o no😈). En este nuevo año de vida, deseo que sigas creciendo, aprendiendo y disfrutando cada momento al máximo.</p>
-
-        <p>Quiero que sepas cuánto significas para mí. Eres más que una novia; eres mi compañera, mi cómplice y mi mejor amiga. Espero que tu día esté lleno de sorpresas, risas y mucho amor, porque te lo mereces todo. Estoy emocionado por seguir compartiendo momentos contigo y por todas las aventuras que nos esperan en el futuro.</p>
-            
-        <p>¡A celebrar tu día como nunca antes! Te quiero mucho. ❤️</p>
+    <div class="slider">
+        
+        <div class="presentacion">
+            <h2>Feliz Navidad y Feliz Año Nuevo!</h2>
+            <p>Gracias por aguantarme tantos meses, de verdad que no sabes cuanto te amo. Espero que te haya encantado mi regalito de Navidad. A continuación te dejo un video que significa muchisimo para mi, feliz año nuevo wua.</p>
+            <video width="100%" height="100%" controls autoplay>
+                <source src="images/navidad.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="presentacion">
+            <h2>Dedicado a mi Chica</h2>
+            <h3>Feliz cumpleaños!!!!</h3>
+            <p>Feliz cumpleaños a la chica que me hace reír todos los días! Eres la luz en mis mañanas y la razón detrás de muchas de mis sonrisas. Desde que comenzamos nuestra relación hace 7 meses, mi vida ha cambiado para mejor. Tu apoyo incondicional y tus intentos constantes de ayudarme hacen que cada día sea especial.</p>
+    
+            <p>Admiro la forma en que siempre encuentras la manera de alegrar mis días, incluso cuando las cosas se ponen difíciles. Tu sentido del humor, tan único y auténtico, hace que cada momento a tu lado sea divertido y memorable. Me encanta que compartamos esa misma locura, ese humor de "kk" que tanto nos une.</p>
+                
+            <p>Hoy, al cumplir 20 añitos 🦆, te conviertes en una abuelita moderna, ¡prácticamente un fósil! Pero no te preocupes, eso solo significa que eres aún más sabia y divertida(o no😈). En este nuevo año de vida, deseo que sigas creciendo, aprendiendo y disfrutando cada momento al máximo.</p>
+    
+            <p>Quiero que sepas cuánto significas para mí. Eres más que una novia; eres mi compañera, mi cómplice y mi mejor amiga. Espero que tu día esté lleno de sorpresas, risas y mucho amor, porque te lo mereces todo. Estoy emocionado por seguir compartiendo momentos contigo y por todas las aventuras que nos esperan en el futuro.</p>
+                
+            <p>¡A celebrar tu día como nunca antes! Te quiero mucho. ❤️</p>
+        </div>
+        <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+        <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
     </div>
-
+    
     <!-- Contenedor de imágenes con dos caras (imagen y texto) -->
     <h2>ALBUM DE FOTOS</h2>
     <div class="galeria">
@@ -75,5 +88,24 @@
     </div>
 
     <script src="./js/main.js"></script>
+    <script>
+        var slideIndex = 1;
+        showDivs(slideIndex);
+        
+        function plusDivs(n) {
+          showDivs(slideIndex += n);
+        }
+        
+        function showDivs(n) {
+          var i;
+          var x = document.getElementsByClassName("presentacion");
+          if (n > x.length) {slideIndex = 1}
+          if (n < 1) {slideIndex = x.length}
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";  
+          }
+          x[slideIndex-1].style.display = "block";  
+        }
+        </script>
 </body>
 </html>

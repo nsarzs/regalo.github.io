@@ -52,3 +52,5 @@ document.querySelectorAll('.cuadro').forEach(cuadro => {
         cuadro.classList.toggle('flip');
     });
 });
+
+
