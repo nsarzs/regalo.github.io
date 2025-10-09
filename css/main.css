@@ -56,6 +56,19 @@ body {
     text-align: center; /* Centrar texto dentro del div */
 }
 
+.veintiuno {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.veintiuno img {
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
 .footer {
     background-color: #ffffff;
     border-radius: 10px;
