@@ -159,6 +159,37 @@
     border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px 16px 14px;
     box-shadow: 0 20px 60px rgba(0,0,0,.5); position:relative }
   .redeemState{ font-size:13px; color:#9fe29f }
+
+  /* ===== Ajustes de RESUMEN en móvil ===== */
+  @media (max-width: 640px) {
+    .summary { left:8px; right:8px; bottom:8px; padding:8px 8px 10px; }
+    .summary h3 { margin:4px 8px 6px; font-size:13px; }
+
+    /* 4 columnas compactas en móviles medianos */
+    .summaryGrid{
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:8px;
+    }
+
+    .sumThumb{ border-radius:10px; }
+    .sumMeta{ font-size:11px; }
+    .chip{ padding:2px 6px; font-size:11px; }
+    .rarMini{ font-size:11px; }
+  }
+
+  @media (max-width: 420px) {
+    /* 5 columnas aún más pequeñas en móviles pequeños */
+    .summaryGrid{
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap:6px;
+    }
+    .summary { padding:6px 6px 8px; }
+    .summary h3 { font-size:12px; }
+    .sumThumb{ border-radius:8px; }
+    .sumMeta{ font-size:10px; padding:0 2px; }
+    .chip{ padding:1px 6px; font-size:10px; }
+    .rarMini{ font-size:10px; }
+  }
 </style>
 </head>
 <body>
@@ -329,7 +360,8 @@
       "img/bolos.png"
     ],
     rare: [
-      "img/cosmetica.png"
+      "img/cosmetica.png",
+      "img/sushi.png"
     ],
     secret: [
       "img/viajesito.png"
@@ -355,8 +387,8 @@
     { id:'paseo',     rarity:'common',   img: IMAGES.common[4] },
     { id:'cocina',    rarity:'uncommon', img: IMAGES.uncommon[0] },
     { id:'bolos',     rarity:'uncommon', img: IMAGES.uncommon[1] },
-    
-    { id:'cosmetica',  rarity:'rare',     img: IMAGES.rare[0] },
+    { id:'cosmetica', rarity:'rare',     img: IMAGES.rare[0] },
+    { id:'sushi',     rarity:'rare',     img: IMAGES.rare[1] },
     { id:'viajesito',  rarity:'secret',  img: IMAGES.secret[0] },
     { id:'oceanografic', rarity:'ultra', img: IMAGES.ultra[0] },
   ];
