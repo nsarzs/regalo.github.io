@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Pack de regalos — Imagen partida real</title>
+<style>
+  :root{
+    --bg:#0b0f1a; --accent:#7c4dff; --text:#e6ecff; --muted:#9fb0e6;
+    --common:#9aa4b2; --uncommon:#3da5ff; --rare:#a25cff; --secret:#00e5b5; --ultra:#f4bf00;
+    --lidH: 11%; /* ← altura visible de la tapa. Ajusta 10–20% */
+    --pack-fallback: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 896'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y='0' x2='1' y2='1'%3E%3Cstop stop-color='%23121a3a'/%3E%3Cstop offset='1' stop-color='%23080d22'/%3E%3C/linearGradient%3E%3CradialGradient id='r' cx='50%25' cy='18%25' r='30%25'%3E%3Cstop stop-color='%23ffffff' stop-opacity='.28'/%3E%3Cstop offset='1' stop-color='%23ffffff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' rx='28' ry='28' fill='url(%23g)'/%3E%3Crect width='100%25' height='100%25' rx='28' ry='28' fill='url(%23r)'/%3E%3Cg font-family='system-ui' fill='%23e6ecff' text-anchor='middle'%3E%3Ctext x='50%25' y='48%25' font-weight='800' font-size='40' letter-spacing='.04em'%3ETCG POCKET%3C/text%3E%3Ctext x='50%25' y='55%25' font-size='18' opacity='.85'%3EDEMO PACK%3C/text%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+  html,body{ height:100% }
+  body{ margin:0; background:#0b0f1a; color:var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
+    overflow-x:hidden; overscroll-behavior: contain; }
+
+  .wrap{ max-width:980px; margin:0 auto; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px }
+  h1{ font-size: clamp(18px,4.6vw,28px); margin:12px 0 4px }
+  p.lead{ color:var(--muted); margin:0 0 12px; font-size:clamp(14px,3.8vw,16px) }
+  .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 10px; font-size:14px }
+  button{ appearance:none; border:1px solid rgba(255,255,255,.14); background:transparent; color:var(--text);
+    border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer }
+  button.hidden{ display:none }
+  .pill{ padding:6px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px; color:#cfe0ff; font-size:13px }
+
+  .screen{ display:none } .screen.active{ display:block }
+  .hidden{ display:none !important }
+
+  .stage{ position:relative; width:100%; height: calc(100vh - 190px); min-height:540px; border-radius:16px; overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    background: radial-gradient(60% 40% at 50% 20%, rgba(124,77,255,.22), transparent 60%), linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    display:flex; align-items:center; justify-content:center; user-select:none; touch-action:none; }
+
+  /* === PACK con imagen partida real === */
+  .pack{ position:absolute; width:min(90vw,460px); aspect-ratio: 2.5/3.5; border-radius:18px; overflow:visible;
+    z-index:3; transition: transform .6s ease, opacity .6s ease; }
+
+  .packBody, .packTop { background: none; }
+
+  .packImg{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit: cover; object-position: center top; display:block;
+  }
+
+  /* recortes sincronizados con --lidH */
+  .packTop  .packImg{ clip-path: inset(0 0 calc(100% - var(--lidH)) 0); }
+  .packBody .packImg{ clip-path: inset(var(--lidH) 0 0 0); }
+
+  .packTop.off{ transform: translateY(-120%); opacity:0; }
+
+  .tear-top{ position:absolute; left:0; right:0; top:8px; height:48px; display:flex; align-items:center; justify-content:center; z-index:10 }
+  .hit{ position:relative; width:100%; height:48px; pointer-events:auto; touch-action:none; }
+  .line{
+    position:absolute; left:0; right:0; top:90%;
+    height: 8px; transform: translateY(-50%); border-radius:0; overflow:hidden;
+    background: rgba(255,255,255,.18);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 1px 0 rgba(0,0,0,.35), 0 -1px 0 rgba(255,255,255,.15);
+  }
+  .fill{ position:absolute; left:0; top:0; bottom:0; width:0%;
+    background: linear-gradient(90deg, rgba(124,77,255,1), rgba(84,38,255,1)); }
+
+  .ejectLayer{ position:absolute; inset:0; z-index:4; pointer-events:none; overflow:visible }
+  .ejectCard{ position:absolute; width: min(16vw, 120px); aspect-ratio: 2.5/3.5; left:50%; top:14%;
+              transform: translateX(-50%) translateY(0) scale(.9);
+              border-radius:12px; overflow:hidden; opacity:0;
+              box-shadow: 0 10px 20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.14);
+              background: linear-gradient(135deg,#121736,#0c1128); }
+  .ejectCard::after{ content:""; position:absolute; inset:0; background:
+                     radial-gradient(120% 70% at 50% -10%, rgba(124,77,255,.18), transparent 60%),
+                     radial-gradient(40% 60% at 50% 110%, rgba(84,38,255,.25), transparent 60%); }
+  @keyframes shootUp { 0% { opacity:0; transform: translateX(-50%) translateY(0) scale(.9); }
+                       10%{ opacity:1; }
+                       100%{ opacity:0; transform: translateX(var(--dx)) translateY(-50vh) scale(1); } }
+
+  .solo{ position:absolute; inset:0; display:grid; place-items:center; z-index:2; pointer-events:none; }
+  .stack{ position:relative; width: clamp(140px, 64vw, 360px); aspect-ratio: 2.5/3.5; }
+  .stack.from-top{ animation: slideFromTop .55s ease forwards; }
+  @keyframes slideFromTop{ from{ transform: translateY(-28%); opacity:0 } to{ transform: translateY(0); opacity:1 } }
+  .below{ position:absolute; inset:0; display:grid; place-items:center; z-index:0; pointer-events:none; }
+  .above{ position:absolute; inset:0; z-index:1; }
+
+  .progress{ position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:13px; color:#cfd9ff }
+  .tip{ position:absolute; top:12px; left:0; right:0; text-align:center; font-size:13px; color:#cfd9ff }
+
+  .card{ width: 100%; height:100%; position:relative; pointer-events:auto; perspective: 1200px; }
+  .card-3d{ position:absolute; inset:0; transform-style: preserve-3d; transition: transform 620ms cubic-bezier(.2,.7,.2,1); }
+  .card.revealed .card-3d{ transform: rotateY(180deg); }
+  .face{ position:absolute; inset:0; border-radius: 16px; overflow:hidden; border:1px solid rgba(255,255,255,.14);
+         backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .back{ transform: rotateY(0deg); background: #0b0f1a; display:grid; place-items:center; }
+  .back img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+
+  .front{ background:#000; transform: rotateY(180deg); }
+  .art{ position:absolute; inset:0; z-index:1; } .art img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  .glow{ position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen; opacity:0; transition: opacity .3s ease; z-index:2; }
+  .card.revealed.rare .glow{ background: radial-gradient(60% 60% at 50% 50%, rgba(162,92,255,.55), transparent 60%); opacity:.95 }
+  .card.revealed.secret .glow{ background: conic-gradient(from 0deg at 50% 50%, #00e5b577, #7c4dff77, #3da5ff77, #f4bf0077, #00e5b5aa); opacity:.98 }
+  .card.revealed.ultra .glow{ background: radial-gradient(70% 70% at 50% 50%, rgba(244,191,0,.8), transparent 60%); opacity:1 }
+
+  .shine{ position:absolute; inset:-20%; pointer-events:none; opacity:0; background: linear-gradient(120deg, transparent 42%, rgba(255,255,255,.85) 50%, transparent 58%); transform: rotate(20deg) translateX(-120%); z-index:3; }
+  .shine.on{ opacity:1; transition: transform .9s ease, opacity .4s ease .5s; transform: rotate(20deg) translateX(120%); }
+  .aura{ position:absolute; inset:-10px; border-radius:18px; pointer-events:none; opacity:0; z-index:4; }
+  .finalFx{ position:absolute; inset:0; pointer-events:none; z-index:5; display:grid; place-items:center; }
+  .finalFx .flash{ width:100%; height:100%; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.85), rgba(255,255,255,.0) 55%); opacity:0; }
+  
+  .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:6 }
+
+  .summary { position:absolute; left:12px; right:12px; bottom:12px; z-index:7;
+             background: rgba(8,12,24,.7); backdrop-filter: blur(10px);
+             border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 10px 12px; }
+  .summary h3{ margin:6px 10px 8px; font-size:14px; color:#cfe0ff }
+  .summaryGrid{ display:grid; grid-template-columns: repeat(3, minmax(110px, 1fr)); gap:10px; }
+  .summaryGrid .sumItem:nth-child(4){ grid-column: 1; }
+  .summaryGrid .sumItem:nth-child(5){ grid-column: 3; }
+
+  .sumItem{ display:flex; flex-direction:column; gap:6px; }
+  .sumThumb{ position:relative; aspect-ratio: 2.5/3.5; border-radius:12px; overflow:hidden; background:#0d1022;
+             border:1px solid rgba(255,255,255,.14) }
+  .sumThumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .sumMeta{ display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:0 2px 2px 2px }
+  .chip{ padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.2); font-weight:700 }
+  .chip.new{ background:#00e676; color:#072; border-color:#00c853 }
+  .chip.dupe{ background:#cfd8dc; color:#102027 }
+  .rarMini{ font-weight:800; color:#e6ecff; opacity:.9; text-transform:uppercase }
+
+  .toolbar{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin: 8px 0 12px }
+  .tabs{ display:flex; gap:8px; margin: 10px 0 }
+  .tab{ padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14); cursor:pointer }
+  .tab.active{ background:rgba(255,255,255,.06) }
+  .counters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin: 2px 0 8px; }
+  .ctr{ display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); font-weight:800; font-size:12px; }
+  .dot{ width:10px; height:10px; border-radius:50% }
+  .dot.common{ background: var(--common) } .dot.uncommon{ background: var(--uncommon) }
+  .dot.rare{ background: var(--rare) } .dot.secret{ background: var(--secret) } .dot.ultra{ background: var(--ultra) }
+
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:14px }
+  .cardCell{ display:flex; flex-direction:column; align-items:stretch; gap:6px }
+  .thumb{ position:relative; aspect-ratio: 2.5/3.5; border-radius:16px; overflow:hidden; background:#0d1022; border:1px solid rgba(255,255,255,.14) }
+  .thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb::after{ content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+  .meta{ display:flex; justify-content:space-between; align-items:center; gap:8px }
+  .badge{ padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.2); color:#111; background:#ddd; font-weight:800; font-size:12px; text-transform:uppercase }
+  .dupCount { position: absolute; bottom: 6px; right: 6px; min-width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; color: #000; font-weight: 700; font-size: 12px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 2px rgba(0,0,0,0.6); }
+  .actionArea{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .redeemBtn{ padding:6px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#e6ecff; font-weight:700; cursor:pointer }
+  .redeemBtn:disabled{ opacity:.5; cursor:not-allowed }
+  .stock{ font-size:12px; color:#cfe0ff }
+  .empty{ color:#b8c6ff; text-align:center; padding: 20px 0 }
+  .giftModal{ position:fixed; inset:0; background:rgba(3,6,14,.65); backdrop-filter: blur(6px);
+    display:grid; place-items:center; z-index:50 }
+  .giftModal.hidden{ display:none }
+  .giftBox{ width:min(92vw,520px); background:rgba(12,16,32,.92); color:var(--text);
+    border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px 16px 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5); position:relative }
+  .redeemState{ font-size:13px; color:#9fe29f }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pack de regalos 💜</h1>
+    <p class="lead">Abre los sobres y descubre los mini regalos!!</p>
+
+    <div class="controls">
+      <button id="againBtn" class="hidden">Abrir otro sobre</button>
+      <button id="btnCollection">Ver colección</button>
+    </div>
+
+    <div id="screen-opener" class="screen active">
+      <div class="stage" id="stage">
+        <div class="pack" id="pack">
+          <div class="packBody" id="packBody">
+            <img id="packImgBody" class="packImg" src="img/sobre.jpeg" alt="Sobre cuerpo">
+          </div>
+          <div class="packTop" id="packTop">
+            <img id="packImgTop" class="packImg" src="img/sobre.jpeg" alt="Sobre tapa">
+            <div class="seam" id="seam"></div>
+          </div>
+
+          <!-- Deslizador -->
+          <div class="tear-top" id="tear">
+            <div class="hit" id="hit">
+              <div class="line" id="line"><div class="fill" id="fill"></div></div>
+            </div>
+          </div>
+
+          <div class="ejectLayer" id="ejectLayer"></div>
+        </div>
+
+        <div class="solo" id="solo">
+          <div class="progress" id="progress">0/0</div>
+          <div class="tip" id="tip"></div>
+        </div>
+
+        <div class="summary hidden" id="summary">
+          <h3>Cartas obtenidas</h3>
+          <div class="summaryGrid" id="summaryGrid"></div>
+        </div>
+
+        <div class="confetti" id="confetti"></div>
+
+        <!-- Modal regalo (opcional) -->
+        <div id="giftModal" class="giftModal hidden" role="dialog" aria-modal="true" aria-labelledby="giftTitle">
+          <div class="giftBox">
+            <button class="closeX" id="giftClose" aria-label="Cerrar">✕</button>
+            <h3 id="giftTitle"></h3>
+            <p id="giftDesc"></p>
+            <div class="giftActions">
+              <button id="redeemBtn">🎁 Canjear</button>
+              <span id="redeemState" class="redeemState"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-collection" class="screen">
+      <div class="toolbar">
+        <button id="btnBack">← Volver</button>
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-filter="all">Todo</div>
+          <div class="tab" data-filter="ultra">Ultra</div>
+          <div class="tab" data-filter="secret">Secreta</div>
+          <div class="tab" data-filter="rare">Rara</div>
+          <div class="tab" data-filter="uncommon">Infrecuente</div>
+          <div class="tab" data-filter="common">Común</div>
+        </div>
+        <button id="btnReset">Borrar colección</button>
+      </div>
+      <div class="counters" id="counters"></div>
+      <div id="collectionGrid" class="grid"></div>
+      <div id="emptyState" class="empty hidden">Todavía no has conseguido ninguna carta. ¡Abre un sobre!</div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const CARD_COUNT = 5;
+  const storageKey = 'tcg-pocket-demo-collection';
+
+  const els = {
+    pack: document.getElementById('pack'),
+    packBody: document.getElementById('packBody'),
+    packTop: document.getElementById('packTop'),
+    packImgTop: document.getElementById('packImgTop'),
+    packImgBody: document.getElementById('packImgBody'),
+    tear: document.getElementById('tear'),
+    line: document.getElementById('line'),
+    ejectLayer: document.getElementById('ejectLayer'),
+    hit: document.getElementById('hit'),
+    fill: document.getElementById('fill'),
+    againBtn: document.getElementById('againBtn'),
+    solo: document.getElementById('solo'),
+    tip: document.getElementById('tip'),
+    progress: document.getElementById('progress'),
+    confetti: document.getElementById('confetti'),
+    btnCollection: document.getElementById('btnCollection'),
+    screenOpener: document.getElementById('screen-opener'),
+    screenCollection: document.getElementById('screen-collection'),
+    tabs: document.getElementById('tabs'),
+    counters: document.getElementById('counters'),
+    grid: document.getElementById('collectionGrid'),
+    empty: document.getElementById('emptyState'),
+    btnBack: document.getElementById('btnBack'),
+    btnReset: document.getElementById('btnReset'),
+    summary: document.getElementById('summary'),
+    summaryGrid: document.getElementById('summaryGrid'),
+    giftModal: document.getElementById('giftModal'),
+    giftTitle: document.getElementById('giftTitle'),
+    giftDesc: document.getElementById('giftDesc'),
+    giftClose: document.getElementById('giftClose'),
+    redeemBtn: document.getElementById('redeemBtn'),
+    redeemState: document.getElementById('redeemState'),
+  };
+
+  // === Imagen por defecto del sobre y ratio real ===
+  const DEFAULT_PACK_SRC = 'img/sobre.jpeg';
+
+  function setPackImageAndRatio(src){
+    const probe = new Image();
+    probe.onload = () => {
+      document.getElementById('pack').style.aspectRatio =
+        `${probe.naturalWidth} / ${probe.naturalHeight}`;
+      document.getElementById('packImgTop').src  = src;
+      document.getElementById('packImgBody').src = src;
+      requestAnimationFrame(() => typeof alignPackBackground === 'function' && alignPackBackground());
+    };
+    probe.src = src;
+  }
+  setPackImageAndRatio(DEFAULT_PACK_SRC);
+
+  // src por defecto (fallback svg)
+  const DEFAULT_SRC = getComputedStyle(document.documentElement).getPropertyValue('--pack-fallback')
+                        .trim().replace(/^url\((.*)\)$/, '$1').replace(/^"(.*)"$/, '$1');
+  els.packImgTop.src = DEFAULT_SRC;
+  els.packImgBody.src = DEFAULT_SRC;
+
+  // === Alinear tapa/costura
+  function alignPackBackground(){
+    const packRect = els.pack.getBoundingClientRect();
+    if(!packRect.width || !packRect.height) return;
+    const lidPct = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lidH')) || 18) / 100;
+    const seamY = packRect.height * lidPct;
+    const hitH  = Math.round(els.hit.getBoundingClientRect().height || 48);
+    els.packImgTop.style.transform = 'translateY(0px)';
+    const lineCenterWithinHit = 0.90 * hitH;
+    els.tear.style.top = (seamY - lineCenterWithinHit) + 'px';
+  }
+
+  window.addEventListener('load', ()=>requestAnimationFrame(alignPackBackground));
+  window.addEventListener('resize', ()=>requestAnimationFrame(alignPackBackground));
+
+  /* ===== Imágenes de cartas (placeholders) ===== */
+  const IMAGES = {
+    common: [
+      "img/cerveza.png",
+      "img/kinder.png",
+      "img/cafe.png",
+      "img/cine.png",
+      "img/paseo.png"
+    ],
+    uncommon: [
+      "img/cocina.png",
+      "img/bolos.png"
+    ],
+    rare: [
+      "img/cosmetica.png"
+    ],
+    secret: [
+      "img/viajesito.png"
+    ],
+    ultra: [
+      "img/oceanografic.png"
+    ]
+  };
+
+  const RARITIES = {
+    common:    { key:'common',    name:'Común',       colorCSS:'var(--common)'},
+    uncommon:  { key:'uncommon',  name:'Infrecuente', colorCSS:'var(--uncommon)'},
+    rare:      { key:'rare',      name:'Rara',        colorCSS:'var(--rare)'},
+    secret:    { key:'secret',    name:'Secreta',     colorCSS:'var(--secret)'},
+    ultra:     { key:'ultra',     name:'Ultra',       colorCSS:'var(--ultra)'},
+  };
+
+  const GIFTS = [
+    { id:'cerveza',   rarity:'common',   img: IMAGES.common[0] },
+    { id:'kinder',    rarity:'common',   img: IMAGES.common[1] },
+    { id:'cafe',      rarity:'common',   img: IMAGES.common[2] },
+    { id:'peli',      rarity:'common',   img: IMAGES.common[3] },
+    { id:'paseo',     rarity:'common',   img: IMAGES.common[4] },
+    { id:'cocina',    rarity:'uncommon', img: IMAGES.uncommon[0] },
+    { id:'bolos',     rarity:'uncommon', img: IMAGES.uncommon[1] },
+    
+    { id:'cosmetica',  rarity:'rare',     img: IMAGES.rare[0] },
+    { id:'viajesito',  rarity:'secret',  img: IMAGES.secret[0] },
+    { id:'oceanografic', rarity:'ultra', img: IMAGES.ultra[0] },
+  ];
+
+  // ===== Estado general
+  let dragging=false, progressSwipe=0;
+  let deck=[], idx=0, currentCardEl=null, lastFlipAt=0;
+  let revealed=false;
+  let preExisting = new Set();
+  let drawnResults = [];
+  let currentFilter = 'all';
+
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+
+  function setActiveScreen(which){
+    document.getElementById('screen-opener').classList.toggle('active', which==='opener');
+    document.getElementById('screen-collection').classList.toggle('active', which==='collection');
+  }
+  function setSwipeProgress(p){ progressSwipe = clamp01(p); els.fill.style.width = (progressSwipe*100)+'%'; }
+  function updateProgress(){ els.progress.textContent = `${Math.min(idx+1, deck.length)}/${deck.length}`; }
+
+  // ===== Canje y colección (LocalStorage) =====
+  const MAX_REDEEMS = { common:5, uncommon:4, rare:3, secret:2, ultra:1 };
+
+  function ensureFields(item){
+    if (item.maxRedemptions == null) item.maxRedemptions = MAX_REDEEMS[item.rarity] ?? 1;
+    if (item.count == null) item.count = 1;
+    if (item.redeemedCount == null){
+      if (typeof item.redeemsLeft === 'number'){
+        item.redeemedCount = Math.max(0, item.maxRedemptions - item.redeemsLeft);
+        delete item.redeemsLeft;
+      } else {
+        item.redeemedCount = 0;
+      }
+    }
+    return item;
+  }
+
+  // canjes restantes = min( maxRedemptions - redeemedCount, count - redeemedCount)
+  function getRedeemsLeft(item){
+    ensureFields(item);
+    const byRule  = Math.max(0, item.maxRedemptions - item.redeemedCount);
+    const byStock = Math.max(0, item.count - item.redeemedCount);
+    return Math.min(byRule, byStock);
+  }
+
+  function loadCollection(){
+    try { return JSON.parse(localStorage.getItem(storageKey) || '[]').map(ensureFields); }
+    catch { return []; }
+  }
+  function saveCollection(arr){
+    localStorage.setItem(storageKey, JSON.stringify(arr));
+  }
+
+  // Agrega carta (agrupa por giftId)
+  function addToCollection(entry){
+    const col = loadCollection();
+    const existing = col.find(c => c.giftId === entry.giftId);
+    if (existing){
+      ensureFields(existing);
+      existing.count = (existing.count || 1) + 1;
+    } else {
+      col.push({
+        rarity: entry.rarity,
+        name: entry.name,
+        title: entry.title,
+        img: entry.img,
+        ts: Date.now(),
+        giftId: entry.giftId,
+        count: 1,
+        redeemedCount: 0,
+        maxRedemptions: MAX_REDEEMS[entry.rarity] ?? 1
+      });
+    }
+    saveCollection(col);
+  }
+
+  function redeemGift(id){
+    const col = loadCollection();
+    const item = col.find(c => c.giftId === id);
+    if(!item) return alert("Carta no encontrada.");
+    const left = getRedeemsLeft(item);
+    if(left <= 0) return alert("❌ No tienes canjes disponibles para esta carta.");
+    item.redeemedCount += 1;
+    saveCollection(col);
+    alert(`🎁 Has canjeado "${item.title}". Quedan ${getRedeemsLeft(item)}.`);
+    renderCollection(currentFilter);
+  }
+
+  function renderCounters(){
+    // contar sobre datos agregados (por si hay entradas viejas, agregamos al vuelo)
+    const raw = loadCollection();
+    const grouped = {};
+    raw.forEach(it => {
+      const k = it.giftId || it.img || it.title;
+      if(!grouped[k]) grouped[k] = { ...ensureFields({...it}) };
+      else {
+        grouped[k].count = (grouped[k].count||0) + (it.count||1);
+        grouped[k].redeemedCount = (grouped[k].redeemedCount||0) + (it.redeemedCount||0);
+      }
+    });
+    const col = Object.values(grouped);
+
+    const counts = {common:0, uncommon:0, rare:0, secret:0, ultra:0};
+    col.forEach(c => { if(counts[c.rarity]!=null) counts[c.rarity] += c.count || 1; });
+    els.counters.innerHTML='';
+    Object.keys(counts).forEach(k=>{
+      const div=document.createElement('div'); div.className='ctr';
+      div.innerHTML = `<span class="dot ${k}"></span> ${RARITIES[k].name}: ${counts[k]}`;
+      els.counters.appendChild(div);
+    });
+  }
+
+  function renderCollection(filter = 'all') {
+    currentFilter = filter;
+    const raw = loadCollection();
+    // normalizar/agrupar por giftId (tolerante con datos antiguos)
+    const grouped = {};
+    raw.forEach(item => {
+      const key = item.giftId || item.img || item.title;
+      if (!grouped[key]) grouped[key] = { ...ensureFields({...item}) };
+      else {
+        grouped[key].count = (grouped[key].count||0) + (item.count||1);
+        grouped[key].redeemedCount = (grouped[key].redeemedCount||0) + (item.redeemedCount||0);
+      }
+    });
+
+    renderCounters();
+    els.grid.innerHTML = '';
+
+    const entries = Object.values(grouped).filter(it => filter==='all' || it.rarity === filter);
+
+    if (entries.length === 0) {
+      els.grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No hay cartas con ese filtro.</div>';
+      els.empty.classList.remove('hidden');
+      return;
+    }
+    els.empty.classList.add('hidden');
+
+    entries.forEach(item => {
+      ensureFields(item);
+      const cell = document.createElement('div');
+      cell.className = 'cardCell';
+
+      const thumb = document.createElement('div');
+      thumb.className = 'thumb';
+
+      const img = document.createElement('img');
+      img.src = item.img;
+      img.alt = item.title || item.name || 'Carta';
+      img.loading = 'lazy';
+      thumb.appendChild(img);
+
+      if ((item.count || 1) > 1) {
+        const badge = document.createElement('div');
+        badge.textContent = item.count;
+        badge.className = 'dupCount';
+        thumb.appendChild(badge);
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+
+      const r = RARITIES[item.rarity] || { name: item.rarity, colorCSS: '#ddd' };
+      const rarityBadge = document.createElement('span');
+      rarityBadge.className = 'badge';
+      rarityBadge.textContent = r.name;
+      rarityBadge.style.background = r.colorCSS;
+
+      const action = document.createElement('div');
+      action.className = 'actionArea';
+
+      const btn = document.createElement('button');
+      btn.className = 'redeemBtn';
+      const left = getRedeemsLeft(item);
+      btn.textContent = left > 0 ? `🎁 Canjear (${left})` : '❌ Sin canjes';
+      btn.disabled = left <= 0;
+      btn.onclick = () => redeemGift(item.giftId);
+
+      const stock = document.createElement('span');
+      stock.className = 'stock';
+      stock.textContent = `Copias: ${item.count || 1} · Canjeados: ${item.redeemedCount || 0}`;
+
+      action.appendChild(btn);
+      action.appendChild(stock);
+
+      meta.appendChild(rarityBadge);
+
+      cell.appendChild(thumb);
+      cell.appendChild(meta);
+      cell.appendChild(action);
+
+      els.grid.appendChild(cell);
+    });
+  }
+
+  function buildDeck(n) {
+    const byR = {
+      common:   GIFTS.filter(g => g.rarity === 'common'),
+      uncommon: GIFTS.filter(g => g.rarity === 'uncommon'),
+      rare:     GIFTS.filter(g => g.rarity === 'rare'),
+      secret:   GIFTS.filter(g => g.rarity === 'secret'),
+      ultra:    GIFTS.filter(g => g.rarity === 'ultra'),
+    };
+
+    const pickR = r => {
+      const pool = byR[r];
+      return pool && pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+    };
+
+    const d = [];
+    // primeras (todas comunes)
+    for (let i = 0; i < n - 1; i++) {
+      const g = pickR('common');
+      d.push({ key: 'common', gift: g, special: false, img: g?.img });
+    }
+
+    // última carta con probabilidad de rareza
+    const r2 = Math.random();
+    let last = 'uncommon';
+    if (r2 < 0.08 && byR.ultra.length) last = 'ultra';
+    else if (r2 < 0.25 && byR.secret.length) last = 'secret';
+    else if (r2 < 0.55 && byR.rare.length) last = 'rare';
+    else if (r2 < 0.85 && byR.uncommon.length) last = 'uncommon';
+    else last = 'common';
+
+    const g = pickR(last) || pickR('common');
+    d.push({ key: last, gift: g, special: true, img: g?.img });
+
+    return d;
+  }
+
+  // ===== Modal regalo (no cambia la lógica de canje del botón de colección)
+  function giftKey(g){ return `gift-redeemed-${g.id}`; }
+  function isRedeemed(g){ try{ return localStorage.getItem(giftKey(g)) === '1'; }catch(_){ return false; } }
+  function setRedeemed(g, val){ try{ localStorage.setItem(giftKey(g), val?'1':'0'); }catch(_){ } }
+  const modal = {
+    open(g){
+      els.giftTitle.textContent = g.title;
+      els.giftDesc.textContent = g.desc;
+      const done = isRedeemed(g);
+      els.redeemState.textContent = done ? '✅ Ya canjeado' : '';
+      els.redeemBtn.disabled = done;
+      els.giftModal.classList.remove('hidden');
+      els.redeemBtn.onclick = () => {
+        setRedeemed(g, true);
+        els.redeemState.textContent = '✅ Ya canjeado';
+        els.redeemBtn.disabled = true;
+        burstConfetti(els.giftModal, 120);
+      };
+    },
+    close(){ els.giftModal.classList.add('hidden'); }
+  };
+  document.getElementById('giftClose').addEventListener('click', ()=>modal.close());
+  els.giftModal.addEventListener('click', (e)=>{ if(e.target===els.giftModal) modal.close(); });
+  window.addEventListener('keydown', e=>{ if(e.key==='Escape') modal.close(); });
+
+  // ===== Rasgado
+  function updateFromClientX(e){
+    const clientX = e?.clientX ?? (e?.touches && e.touches[0]?.clientX) ?? (e?.changedTouches && e.changedTouches[0]?.clientX) ?? e?.pageX;
+    const rect = els.hit.getBoundingClientRect();
+    const p = Math.max(0, Math.min(1, (clientX - rect.left) / (rect.width)));
+    setSwipeProgress(p);
+  }
+  function openPack(){ if(els.pack.classList.contains('opened')) return; els.pack.classList.add('opened'); setSwipeProgress(1); afterOpen(); }
+
+  if(window.PointerEvent){
+    els.hit.addEventListener('pointerdown', e=>{ if(els.pack.classList.contains('opened')) return; dragging=true; e.target.setPointerCapture?.(e.pointerId); updateFromClientX(e); e.preventDefault?.(); });
+    window.addEventListener('pointermove', e=>{ if(!dragging) return; updateFromClientX(e); e.preventDefault?.(); }, {passive:false});
+    window.addEventListener('pointerup', e=>{ if(!dragging) return; dragging=false; (progressSwipe>=0.8)? openPack(): setSwipeProgress(0); e.preventDefault?.(); }, {passive:false});
+  }else{
+    els.hit.addEventListener('mousedown', e=>{ if(els.pack.classList.contains('opened')) return; dragging=true; updateFromClientX(e); e.preventDefault(); });
+    window.addEventListener('mousemove', e=>{ if(!dragging) return; updateFromClientX(e); e.preventDefault(); });
+    window.addEventListener('mouseup', ()=>{ if(!dragging) return; dragging=false; (progressSwipe>=0.8)? openPack(): setSwipeProgress(0); });
+    els.hit.addEventListener('touchstart', e=>{ if(els.pack.classList.contains('opened')) return; dragging=true; updateFromClientX(e); e.preventDefault(); }, {passive:false});
+    window.addEventListener('touchmove', e=>{ if(!dragging) return; updateFromClientX(e); e.preventDefault(); }, {passive:false});
+    window.addEventListener('touchend', ()=>{ if(!dragging) return; dragging=false; (progressSwipe>=0.8)? openPack(): setSwipeProgress(0); });
+  }
+
+  function ejectFiveAndHidePack(callback){
+    els.packTop.classList.add('off');
+    els.ejectLayer.innerHTML='';
+    const spread = [-80, -40, 0, 40, 80];
+    for(let i=0;i<5;i++){
+      const ec = document.createElement('div');
+      ec.className='ejectCard';
+      ec.style.setProperty('--dx', spread[i]+'px');
+      ec.style.animation = `shootUp ${620 + i*90}ms cubic-bezier(.2,.7,.2,1) ${i*60}ms forwards`;
+      els.ejectLayer.appendChild(ec);
+    }
+    const total = 620 + (5-1)*90 + (5-1)*60;
+    setTimeout(()=>{
+      const onEnd = () => {
+        els.pack.removeEventListener('transitionend', onEnd);
+        els.pack.classList.add('hidden');
+        callback?.();
+      };
+      els.pack.addEventListener('transitionend', onEnd);
+      els.pack.style.transform='translateY(140%)';
+      els.pack.style.opacity='0';
+    }, total+100);
+  }
+
+  function afterOpen(){
+    requestAnimationFrame(alignPackBackground);
+    preExisting = new Set(loadCollection().flatMap(c => {
+      // si c.count>1, igualmente nos vale la imagen única
+      return [c.img];
+    }));
+    deck = buildDeck(CARD_COUNT);
+    idx=0; updateProgress();
+    ejectFiveAndHidePack(()=>{ showNextStack(true); });
+  }
+
+  // ===== Cartas
+  function backSkinHTML(){
+    return `<img src="img/backcarta.jpeg" alt="Dorso">`;
+  }
+
+  function buildCardBackOnly(){
+    const card = document.createElement('div'); card.className='card'; card.setAttribute('aria-hidden','true');
+    const inner = document.createElement('div'); inner.className='card-3d';
+    const back = document.createElement('div'); back.className='face back'; back.innerHTML = backSkinHTML();
+    const dummyFront = document.createElement('div'); dummyFront.className='face front';
+    inner.appendChild(back); inner.appendChild(dummyFront); card.appendChild(inner);
+    return card;
+  }
+  function createCardEl(entry){
+    const card = document.createElement('div'); card.className = `card ${entry.key}`; card.setAttribute('role','button'); card.setAttribute('tabindex','0');
+    const inner = document.createElement('div'); inner.className='card-3d';
+    const back = document.createElement('div'); back.className='face back'; back.innerHTML = backSkinHTML();
+    const front = document.createElement('div'); front.className='face front';
+    const artFront = document.createElement('div'); artFront.className='art';
+    const imgF = document.createElement('img'); imgF.src=entry.img; imgF.alt=entry.gift?.title || 'Arte'; imgF.draggable=false;
+    artFront.appendChild(imgF);
+    const glow = document.createElement('div'); glow.className='glow';
+    const shine = document.createElement('div'); shine.className='shine';
+    const aura = document.createElement('div'); aura.className='aura';
+    const finalFx = document.createElement('div'); finalFx.className='finalFx'; finalFx.innerHTML="<div class='flash'></div><div class='ring'></div>";
+    front.appendChild(artFront); front.appendChild(glow); front.appendChild(shine); front.appendChild(aura); front.appendChild(finalFx);
+    inner.appendChild(back); inner.appendChild(front); card.appendChild(inner);
+    const name = entry.gift?.title || 'Carta';
+    card.addEventListener('pointerup', ()=>{ doFlip(card, entry, name); });
+    card.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); doFlip(card, entry, name); } });
+    return card;
+  }
+
+  function showNextStack(fromTop=false){
+    document.querySelector('.stack')?.remove();
+    const stack = document.createElement('div'); stack.className='stack';
+    if(fromTop) stack.classList.add('from-top');
+    const below = document.createElement('div'); below.className='below';
+    const above = document.createElement('div'); above.className='above';
+    const current = deck[idx];
+    const cardEl = createCardEl(current);
+    if(idx < deck.length-1){ below.appendChild(buildCardBackOnly()); }
+    above.appendChild(cardEl);
+    stack.appendChild(below); stack.appendChild(above);
+    els.solo.appendChild(stack);
+    els.tip.textContent='';
+    currentCardEl = cardEl;
+  }
+
+  function celebrate(card, rarityKey){
+    const shine = card.querySelector('.shine');
+    if(shine){ void shine.offsetWidth; shine.classList.add('on'); setTimeout(()=> shine.classList.remove('on'), 1000); }
+    const intensity = rarityKey==='ultra'?120: (rarityKey==='secret'?95:75);
+    burstConfetti(card, intensity);
+    const fx=card.querySelector('.finalFx'); fx?.classList.add('on'); setTimeout(()=>{ fx?.classList.remove('on'); }, 1100);
+  }
+  function doFlip(card, entry, name){
+    const now=performance.now(); if(now-lastFlipAt<120) return; lastFlipAt=now;
+    if(!currentCardEl || card!==currentCardEl) return;
+    const rarityKey = entry.key;
+    if(!revealed){
+      card.classList.add('revealed'); revealed=true;
+      els.tip.textContent = (idx < deck.length-1) ? 'Toca de nuevo para la siguiente' : 'Última carta';
+      if(rarityKey==='rare'||rarityKey==='secret'||rarityKey==='ultra') celebrate(card, rarityKey);
+      const isNew = !preExisting.has(entry.img);
+      drawnResults.push({ img: entry.img, rarity: rarityKey, isNew, gift: entry.gift });
+      addToCollection({ rarity:rarityKey, name, title: entry.gift?.title || name, img:entry.img, ts:Date.now(), giftId: entry.gift?.id });
+    }else{
+      idx++; if(idx<deck.length){ updateProgress(); revealed=false; showNextStack(); }
+      else { els.tip.textContent='¡Fin del sobre!'; els.againBtn.classList.remove('hidden'); showSummary(); }
+    }
+  }
+
+  function showSummary(){
+    document.querySelector('.stack')?.remove();
+    els.summaryGrid.innerHTML='';
+    drawnResults.forEach(dr => {
+      const r = RARITIES[dr.rarity] || { name: dr.rarity, colorCSS: '#ddd' };
+      const item = document.createElement('div'); item.className='sumItem';
+      const th = document.createElement('div'); th.className='sumThumb';
+      th.style.boxShadow = `inset 0 0 0 2px ${r.colorCSS}`;
+      const img = document.createElement('img'); img.src=dr.img; img.alt=r.name;
+      th.appendChild(img);
+      const meta = document.createElement('div'); meta.className='sumMeta';
+      const rar = document.createElement('span'); rar.className='rarMini'; rar.textContent = r.name;
+      const chip = document.createElement('span'); chip.className = 'chip ' + (dr.isNew?'new':'dupe'); chip.textContent = dr.isNew ? 'Nueva' : 'Ya la tienes';
+      meta.appendChild(rar); meta.appendChild(chip);
+      item.appendChild(th); item.appendChild(meta);
+      els.summaryGrid.appendChild(item);
+    });
+    els.summary.classList.remove('hidden');
+  }
+
+  function burstConfetti(target, pieces=40){
+    const rect = target.getBoundingClientRect();
+    const originX = rect.left + rect.width/2;
+    const originY = rect.top + rect.height/2;
+    const colors=['#ffd166','#06d6a0','#118ab2','#ef476f','#f4bf00','#a25cff','#3da5ff','#00e5b5'];
+    for(let i=0;i<pieces;i++){
+      const piece=document.createElement('i');
+      piece.style.position='fixed';
+      piece.style.left=(originX+(Math.random()*40-20))+'px';
+      piece.style.top=(originY+(Math.random()*20-10))+'px';
+      piece.style.width='6px'; piece.style.height='10px';
+      piece.style.borderRadius='2px';
+      piece.style.background=colors[i%colors.length];
+      piece.style.transform=`rotate(${Math.random()*360}deg)`;
+      piece.style.opacity='0.95';
+      piece.style.transition='transform 1.2s linear, top 1.2s linear, opacity 1.2s linear';
+      els.confetti.appendChild(piece);
+      const dx=(Math.random()*2-1)*160, dy= 220 + Math.random()*220;
+      requestAnimationFrame(()=>{
+        piece.style.top=(originY+dy)+'px';
+        piece.style.left=(originX+dx)+'px';
+        piece.style.opacity='0';
+        piece.style.transform=`rotate(${Math.random()*720}deg)`;
+      });
+      setTimeout(()=>piece.remove(),1300);
+    }
+  }
+
+  function reset(){
+    const pack = els.pack;
+    pack.style.transform=''; pack.style.opacity=''; pack.classList.remove('hidden','opened');
+    els.packTop.classList.remove('off');
+    setSwipeProgress(0);
+    deck=[]; idx=0; revealed=false; lastFlipAt=0; drawnResults=[];
+    els.summary.classList.add('hidden');
+    els.ejectLayer.innerHTML=''; document.querySelector('.stack')?.remove();
+    els.tip.textContent=''; els.progress.textContent='0/0'; els.confetti.innerHTML='';
+    els.againBtn.classList.add('hidden');
+    requestAnimationFrame(alignPackBackground);
+  }
+
+  // Botones
+  els.againBtn.addEventListener('click', reset);
+  els.btnCollection.addEventListener('click', ()=>{ setActiveScreen('collection'); renderCollection('all'); });
+  els.btnBack.addEventListener('click', ()=>{ setActiveScreen('opener'); });
+  els.btnReset.addEventListener('click', ()=>{ saveCollection([]); renderCollection(currentFilter); });
+
+  els.tabs.addEventListener('click', (e)=>{
+    const tab = e.target.closest('.tab'); if(!tab) return;
+    document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active'); renderCollection(tab.dataset.filter);
+  });
+
+  // init
+  setSwipeProgress(0);
+  requestAnimationFrame(alignPackBackground);
+})();
+</script>
+</body>
+</html>
