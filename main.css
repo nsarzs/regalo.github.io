@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap');
+
+:root{
+  --bg: #F6F1EA;           /* crema de fondo */
+  --paper: #FFF9F2;        /* “papel” */
+  --ink: #3E3A36;          /* texto principal (cálido) */
+  --muted: #7D746C;        /* texto secundario */
+  --beige-200:#F1E8DE;
+  --beige-300:#E9DED1;
+  --beige-400:#E2D6C7;
+  --brand:#B77C5A;         /* acento suave */
+  --brand-ink:#7A4F37;     /* acento oscuro */
+  --shadow: 0 10px 30px rgba(101,77,50,.12);
+  --radius: 16px;
+}
+
+/* Accesibilidad: clase para ocultar solo visualmente */
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+*{ box-sizing:border-box }
+html, body{ height:100% }
+body{
+  margin:0;
+  background: linear-gradient(180deg, var(--bg), #FCF7F2);
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.container{
+  width:min(1100px, 92vw);
+  margin: 0 auto;
+}
+
+/* Header */
+.site-header{
+  background:
+    radial-gradient(90% 50% at 50% 0%, rgba(183,124,90,0.16), transparent 70%),
+    linear-gradient(180deg, var(--paper), var(--bg));
+  border-bottom: 1px solid var(--beige-300);
+}
+.site-header .container{
+  padding: clamp(24px, 6vw, 56px) 0;
+  text-align:center;
+}
+.site-header h1{
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing:.5px;
+  margin: 0 0 6px 0;
+  font-size: clamp(28px, 5.6vw, 44px);
+  color: var(--brand-ink);
+  text-shadow: 0 1px 0 #fff7;
+}
+.subtitle{ color: var(--muted); margin:0; font-weight:600 }
+
+/* Fecha + Cuenta atrás */
+.fecha{
+  text-align:center;
+  margin: 18px 0 10px;
+  color: var(--brand-ink);
+  font-weight: 700;
+}
+.cuenta-atras{
+  display:flex;
+  justify-content:center;
+  gap: clamp(10px, 3vw, 22px);
+  flex-wrap: wrap;
+  margin: 6px 0 36px;
+}
+.grupo{
+  background: var(--paper);
+  border: 1px solid var(--beige-300);
+  border-radius: var(--radius);
+  padding: clamp(12px, 2.8vw, 20px);
+  width: clamp(90px, 18vw, 120px);
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.grupo:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px rgba(101,77,50,.16); }
+.grande{
+  margin:0;
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: var(--brand-ink);
+  font-size: clamp(30px, 7vw, 46px);
+}
+.chico{
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+}
+
+/* Slider */
+.slider{
+  position: relative;
+  margin: 16px 0 40px;
+}
+.presentacion{
+  display:none; /* el JS las muestra */
+  background: var(--paper);
+  border: 1px solid var(--beige-300);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(16px, 4vw, 28px);
+  width: min(860px, 96%);
+  margin: 0 auto 26px;
+  text-align:center;
+}
+.presentacion h2{
+  font-family:'Playfair Display', serif;
+  color: var(--brand-ink);
+  font-size: clamp(20px, 4.6vw, 30px);
+  margin: 0 0 6px;
+}
+.presentacion h3{
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+.presentacion p{
+  color: #5d554e;
+  margin: 8px auto;
+  width: min(70ch, 100%);
+  text-wrap: pretty;
+}
+
+.video-frame{
+  margin-top: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0000000d;
+  border: 1px solid var(--beige-300);
+}
+video{
+  width: 100%;
+  height: auto;
+  display:block;
+}
+
+/* Tarjetas de la primera slide */
+.veintiuno{
+  display:flex;
+  justify-content:center;
+  gap: clamp(10px, 3vw, 18px);
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.card-link img{
+  width: clamp(160px, 30vw, 220px);
+  height: auto;
+  display:block;
+  border-radius: 14px;
+  border: 1px solid var(--beige-300);
+  box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card-link:hover img{ transform: translateY(-3px) rotate(-.7deg); box-shadow: 0 18px 36px rgba(101,77,50,.18); }
+
+/* Botones del slider (reemplazan estilos w3) */
+.slider-btn{
+  position:absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid var(--beige-300);
+  background: linear-gradient(180deg, var(--paper), #fff);
+  color: var(--brand-ink);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size: 18px;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.slider-btn:hover{ transform: translateY(-50%) scale(1.05); box-shadow: 0 14px 30px rgba(101,77,50,.18); }
+.slider-btn.left{ left: 6px; }
+.slider-btn.right{ right: 6px; }
+
+/* Álbum */
+.album{ margin: 10px 0 26px; }
+.album h2{
+  text-align:center;
+  font-family:'Playfair Display', serif;
+  color: var(--brand-ink);
+  margin: 6px 0 16px;
+}
+
+.galeria{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: clamp(12px, 3vw, 20px);
+  width: min(900px, 96%);
+  margin: 0 auto 36px;
+}
+
+.cuadro{
+  position: relative;
+  aspect-ratio: 1/1;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform .2s ease;
+}
+.cuadro:hover{ transform: scale(1.02); }
+
+.cara{
+  position:absolute; inset:0;
+  border-radius: 14px;
+  border: 1px solid var(--beige-300);
+  overflow:hidden;
+  backface-visibility: hidden;
+  transition: transform .6s ease;
+  display:grid; place-items:center;
+}
+.frente{ background: #fff; }
+.frente img{ width:100%; height:100%; object-fit:cover; display:block; }
+.atras{
+  background: linear-gradient(180deg, var(--beige-200), var(--beige-300));
+  color: var(--brand-ink);
+  font-weight: 700;
+  transform: rotateY(180deg);
+}
+
+/* (si en algún momento añades clase .flip por JS, ya está preparado) */
+.cuadro.flip .frente{ transform: rotateY(180deg); }
+.cuadro.flip .atras{ transform: rotateY(360deg); }
+
+/* Footer */
+.site-footer{
+  border-top: 1px solid var(--beige-300);
+  background: linear-gradient(180deg, var(--bg), var(--paper));
+  margin-top: 26px;
+}
+.site-footer .container{
+  text-align:center;
+  padding: clamp(18px, 4vw, 28px) 0;
+}
+.site-footer p{ margin: 8px auto; color: var(--muted); width:min(70ch, 92%); }
+.site-footer .love{ color: var(--brand-ink); font-weight:800; letter-spacing:.5px }
+
+/* Responsive fino */
+@media (max-width: 680px){
+  .slider-btn{ width: 36px; height: 36px; font-size: 16px; }
+  .presentacion{ padding: 16px; }
+  .presentacion p{ font-size: .95rem; }
+  .card-link img{ width: clamp(150px, 44vw, 200px); }
+}
+
+@media (max-width: 420px){
+  .grupo{ width: 88px; padding: 10px; }
+  .grande{ font-size: 28px; }
+  .chico{ font-size: 12px; }
+  .slider-btn{ display:none; } /* en móviles puedes deslizar con el dedo */
+}
