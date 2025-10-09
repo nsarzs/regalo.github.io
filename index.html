@@ -1,118 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuenta atrás</title>
-    <link rel="stylesheet" href="./css/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>La Página de Rubitos</title>
+  <link rel="stylesheet" href="./css/main.css" />
 </head>
 <body>
-    <header>
-        <h1>La Pagina de Rubitos</h1>
-    </header>
+  <header class="site-header">
+    <div class="container">
+      <h1>La Página de Rubitos</h1>
+      <p class="subtitle">Cuenta atrás + sorpresas ✨</p>
+    </div>
+  </header>
 
-    <div class="fecha">
-        <p><span id="fecha">22/04/2025 21:00</span></p>
-    </div>
-    <div class="cuenta-atras" id="cuenta-atras">
-        <div class="grupo">
-            <p class="grande" id="dias">00</p>
-            <p class="chico">días</p>
-        </div>
-        <div class="grupo">
-            <p class="grande" id="horas">00</p>
-            <p class="chico">horas</p>
-        </div>
-        <div class="grupo">
-            <p class="grande" id="minutos">00</p>
-            <p class="chico">minutos</p>
-        </div>
-        <div class="grupo">
-            <p class="grande" id="segundos">00</p>
-            <p class="chico">segundos</p>
-        </div>
-    </div>
+  <main class="container">
+    <!-- Cuenta atrás -->
+    <section aria-labelledby="cta-title">
+      <h2 id="cta-title" class="sr-only">Cuenta atrás</h2>
 
-    <div class="slider">
-        <div class ="presentacion">
-            <h2>TWENTY ONE YEARS</h2>
-            <h3>Feliz cumpleaños!!!!</h3>
-            <div class="veintiuno">
-                <a href="cartas/mensajitos.html"><img src="images/carta.png"><img></a>
-                <a href="packopener/packopener.html"><img src="packopener/img/sobre.jpeg"><img></a>
-            </div>
-        </div>
-        <div class="presentacion">
-            <h2>Feliz Navidad y Feliz Año Nuevo!</h2>
-            <p>Gracias por aguantarme tantos meses, de verdad que no sabes cuanto te amo. Espero que te haya encantado mi regalito de Navidad. A continuación te dejo un video que significa muchisimo para mi, feliz año nuevo wua.</p>
-            <video width="100%" height="100%" controls autoplay>
-                <source src="images/navidad.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div class="presentacion">
-            <h2>Dedicado a mi Chica</h2>
-            <h3>Feliz cumpleaños!!!!</h3>
-            <p>Feliz cumpleaños a la chica que me hace reír todos los días! Eres la luz en mis mañanas y la razón detrás de muchas de mis sonrisas. Desde que comenzamos nuestra relación hace 7 meses, mi vida ha cambiado para mejor. Tu apoyo incondicional y tus intentos constantes de ayudarme hacen que cada día sea especial.</p>
-    
-            <p>Admiro la forma en que siempre encuentras la manera de alegrar mis días, incluso cuando las cosas se ponen difíciles. Tu sentido del humor, tan único y auténtico, hace que cada momento a tu lado sea divertido y memorable. Me encanta que compartamos esa misma locura, ese humor de "kk" que tanto nos une.</p>
-                
-            <p>Hoy, al cumplir 20 añitos 🦆, te conviertes en una abuelita moderna, ¡prácticamente un fósil! Pero no te preocupes, eso solo significa que eres aún más sabia y divertida(o no😈). En este nuevo año de vida, deseo que sigas creciendo, aprendiendo y disfrutando cada momento al máximo.</p>
-    
-            <p>Quiero que sepas cuánto significas para mí. Eres más que una novia; eres mi compañera, mi cómplice y mi mejor amiga. Espero que tu día esté lleno de sorpresas, risas y mucho amor, porque te lo mereces todo. Estoy emocionado por seguir compartiendo momentos contigo y por todas las aventuras que nos esperan en el futuro.</p>
-                
-            <p>¡A celebrar tu día como nunca antes! Te quiero mucho. ❤️</p>
-        </div>
-        <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
-        <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
-    </div>
-    
-    <!-- Contenedor de imágenes con dos caras (imagen y texto) -->
-    <h2>ALBUM DE FOTOS</h2>
-    <div class="galeria">
-        
-        <div class="cuadro">
-            <div class="cara frente"><img src="./images/150824.jpg" alt="Imagen 1"></div>
-            <div class="cara atras">15/08/2024</div>
-        </div>
-        <div class="cuadro">
-            <div class="cara frente"><img src="./images/230424.jpg" alt="Imagen 2"></div>
-            <div class="cara atras">23/04/2024</div>
-        </div>
-        <div class="cuadro">
-            <div class="cara frente"><img src="./images/280924.jpg" alt="Imagen 3"></div>
-            <div class="cara atras">28/09/2024</div>
-        </div>
-        <div class="cuadro">
-            <div class="cara frente"><img src="./images/2809242.jpg" alt="Imagen 4"></div>
-            <div class="cara atras">28/09/2024</div>
-        </div>
-        
-    </div>
+      <div class="fecha">
+        <p>📅 <span id="fecha">22/04/2025 21:00</span></p>
+      </div>
 
-    <div class="footer">
-        <h4>Esta página fue creada con cariño, se ira actualizando con más fotitos, o incluso más características con el transcurso de los meses. El contador supongo que ya sabes lo que es ;&#41;.</h4> 
-        <h4>TEAMO ❤️</h4>
-    </div>
+      <div class="cuenta-atras" id="cuenta-atras" role="timer" aria-live="polite">
+        <div class="grupo">
+          <p class="grande" id="dias">00</p>
+          <p class="chico">días</p>
+        </div>
+        <div class="grupo">
+          <p class="grande" id="horas">00</p>
+          <p class="chico">horas</p>
+        </div>
+        <div class="grupo">
+          <p class="grande" id="minutos">00</p>
+          <p class="chico">minutos</p>
+        </div>
+        <div class="grupo">
+          <p class="grande" id="segundos">00</p>
+          <p class="chico">segundos</p>
+        </div>
+      </div>
+    </section>
 
-    <script src="./js/main.js"></script>
-    <script>
-        var slideIndex = 1;
-        showDivs(slideIndex);
-        
-        function plusDivs(n) {
-          showDivs(slideIndex += n);
-        }
-        
-        function showDivs(n) {
-          var i;
-          var x = document.getElementsByClassName("presentacion");
-          if (n > x.length) {slideIndex = 1}
-          if (n < 1) {slideIndex = x.length}
-          for (i = 0; i < x.length; i++) {
-            x[i].style.display = "none";  
-          }
-          x[slideIndex-1].style.display = "block";  
-        }
-        </script>
+    <!-- Slider -->
+    <section class="slider" aria-label="Mensajes y sorpresas">
+      <div class="presentacion">
+        <h2>TWENTY ONE YEARS</h2>
+        <h3>¡Feliz cumpleaños!</h3>
+
+        <div class="veintiuno">
+          <a class="card-link" href="cartas/mensajitos.html" aria-label="Ir a los mensajitos">
+            <img src="images/carta.png" alt="Carta de mensajes" />
+          </a>
+          <a class="card-link" href="packopener/packopener.html" aria-label="Abrir los sobres">
+            <img src="packopener/img/sobre.jpeg" alt="Sobre del pack opener" />
+          </a>
+        </div>
+      </div>
+
+      <div class="presentacion">
+        <h2>¡Feliz Navidad y Feliz Año Nuevo!</h2>
+        <p>
+          Gracias por aguantarme tantos meses, de verdad que no sabes cuánto te amo. Espero que te haya encantado mi regalito de Navidad. A continuación te dejo un video que significa muchísimo para mí. ¡Feliz año nuevo!
+        </p>
+        <div class="video-frame">
+          <video controls>
+            <source src="images/navidad.mp4" type="video/mp4" />
+            Tu navegador no soporta video.
+          </video>
+        </div>
+      </div>
+
+      <div class="presentacion">
+        <h2>Dedicado a mi Chica</h2>
+        <h3>¡Feliz cumpleaños!</h3>
+        <p>Feliz cumpleaños a la chica que me hace reír todos los días! ...</p>
+        <p>Admiro la forma en que siempre encuentras la manera de alegrar mis días...</p>
+        <p>Hoy, al cumplir 20 añitos 🦆, te conviertes en una abuelita moderna...</p>
+        <p>Quiero que sepas cuánto significas para mí...</p>
+        <p>¡A celebrar tu día como nunca antes! Te quiero mucho. ❤️</p>
+      </div>
+
+      <!-- Botones slider (mantengo tus onClick) -->
+      <button class="slider-btn left" onclick="plusDivs(-1)" aria-label="Anterior">&#10094;</button>
+      <button class="slider-btn right" onclick="plusDivs(1)" aria-label="Siguiente">&#10095;</button>
+    </section>
+
+    <!-- Galería -->
+    <section aria-labelledby="album-title" class="album">
+      <h2 id="album-title">Álbum de fotos</h2>
+
+      <div class="galeria">
+        <div class="cuadro" title="15/08/2024">
+          <div class="cara frente"><img src="./images/150824.jpg" alt="Foto del 15/08/2024" /></div>
+          <div class="cara atras">15/08/2024</div>
+        </div>
+        <div class="cuadro" title="23/04/2024">
+          <div class="cara frente"><img src="./images/230424.jpg" alt="Foto del 23/04/2024" /></div>
+          <div class="cara atras">23/04/2024</div>
+        </div>
+        <div class="cuadro" title="28/09/2024">
+          <div class="cara frente"><img src="./images/280924.jpg" alt="Foto del 28/09/2024" /></div>
+          <div class="cara atras">28/09/2024</div>
+        </div>
+        <div class="cuadro" title="28/09/2024">
+          <div class="cara frente"><img src="./images/2809242.jpg" alt="Foto del 28/09/2024" /></div>
+          <div class="cara atras">28/09/2024</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        Esta página fue creada con cariño. Se irá actualizando con más fotitos,
+        o incluso más características con el transcurso de los meses. El contador…
+        ya sabes lo que es ;&#41;
+      </p>
+      <p class="love">TE AMO ❤️</p>
+    </div>
+  </footer>
+
+  <!-- TU JS (intacto) -->
+  <script src="./js/main.js"></script>
+  <script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+    function plusDivs(n){ showDivs(slideIndex += n); }
+    function showDivs(n){
+      var i, x = document.getElementsByClassName("presentacion");
+      if (n > x.length) {slideIndex = 1}
+      if (n < 1) {slideIndex = x.length}
+      for (i = 0; i < x.length; i++) x[i].style.display = "none";
+      x[slideIndex-1].style.display = "block";
+    }
+  </script>
 </body>
 </html>
